@@ -1,0 +1,6 @@
+{
+  "name": "Pregnancy Week Tracker & Calendar Sync",
+  "description": "Calculate and schedule your 40-week pregnancy milestones with 36 weekly milestone events in Google Calendar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,59 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default-deny all unmapped paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation helper for SymptomLog
+    function isValidSymptomLog(data) {
+      return data.userId == request.auth.uid
+        && data.date is string && data.date.size() == 10
+        && data.morningSickness in ['none', 'mild', 'moderate', 'severe']
+        && data.energyLevel is number && data.energyLevel >= 1 && data.energyLevel <= 5
+        && (!('cravings' in data) || (data.cravings is string && data.cravings.size() <= 500))
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000))
+        && (!('pregnancyWeek' in data) || (data.pregnancyWeek is number && data.pregnancyWeek >= 1 && data.pregnancyWeek <= 45))
+        && (!('waterGlasses' in data) || (data.waterGlasses is number && data.waterGlasses >= 0 && data.waterGlasses <= 30))
+        && (!('symptoms' in data) || (data.symptoms is list && data.symptoms.size() <= 20));
+    }
+
+    // User's Daily Symptom Logs
+    match /users/{userId}/symptomLogs/{logId} {
+      allow get: if isOwner(userId) && isValidId(logId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && isValidId(logId)
+        && isValidSymptomLog(incoming());
+      allow update: if isOwner(userId)
+        && isValidId(logId)
+        && isValidSymptomLog(incoming())
+        && incoming().userId == existing().userId;
+      allow delete: if isOwner(userId) && isValidId(logId);
+    }
+  }
+}

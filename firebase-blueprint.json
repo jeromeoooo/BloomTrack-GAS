@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "SymptomLog": {
+      "title": "SymptomLog",
+      "description": "Daily pregnancy symptom, craving, and energy log for an authenticated user",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "UID of the owner"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "Log date formatted as YYYY-MM-DD"
+        },
+        "pregnancyWeek": {
+          "type": "number",
+          "description": "Pregnancy week number (1-42)"
+        },
+        "morningSickness": {
+          "type": "string",
+          "enum": ["none", "mild", "moderate", "severe"],
+          "description": "Level of morning sickness"
+        },
+        "energyLevel": {
+          "type": "number",
+          "description": "Energy rating on scale 1 to 5"
+        },
+        "cravings": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Craved foods or tastes"
+        },
+        "symptoms": {
+          "type": "array",
+          "description": "Array of symptom tags"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Daily journal notes"
+        },
+        "waterGlasses": {
+          "type": "number",
+          "description": "Glasses of water tracked"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["userId", "date", "morningSickness", "energyLevel"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/symptomLogs/{logId}": {
+      "schema": "SymptomLog",
+      "description": "User's daily pregnancy symptom logs"
+    }
+  }
+}
