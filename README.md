@@ -15,13 +15,18 @@ If you saw a blank page after pushing to GitHub and turning on GitHub Pages, thi
 
 ### Recommended: Automatic Deployment with GitHub Actions (1-Click)
 
-A GitHub Actions workflow has already been configured at `.github/workflows/deploy.yml`.
+A GitHub Actions workflow is configured at `.github/workflows/deploy.yml`.
 
-1. Commit and push these updated files to your GitHub repository.
+1. Commit and push these updated files (`package.json`, `vite.config.ts`, `.github/workflows/deploy.yml`) to your GitHub repository:
+   ```bash
+   git add .
+   git commit -m "Fix GitHub Pages deployment and dependency resolution"
+   git push origin main
+   ```
 2. In your GitHub repository, navigate to **Settings** > **Pages** (under the "Code and automation" sidebar).
-3. Under **Build and deployment** > **Source**, change from **"Deploy from a branch"** to **"GitHub Actions"**.
-4. GitHub will automatically trigger the workflow, build the app with `npm run build`, and publish the production build.
-5. In a couple of minutes, your site will be live and fully functional!
+3. Under **Build and deployment** > **Source**, change the dropdown to **GitHub Actions** (if currently set to "Deploy from a branch").
+4. Go to the **Actions** tab on your repository to watch the `Deploy to GitHub Pages` workflow run.
+5. In ~1 minute, the build will succeed and your site will be live at `https://jeromeoooo.github.io/BloomTrack-GAS/`!
 
 ---
 
